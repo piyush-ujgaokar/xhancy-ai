@@ -38,16 +38,16 @@ function initSocketServer(httpServer){
 
     io.on("connection", (socket)=>{
         console.log("User connected successfully:", socket.user?.email);
-        socket.on('ai-message',async (messagePayload)=>{
+        socket.on('ai-message',async (messagePayLoad)=>{
             console.log("Event received!");
-            // const response=await aiService.generateResponse(messagePayLoad.content)
+            const response=await aiService.generateResponse(messagePayLoad.content)
 
-            // socket.emit('ai-response',{
-            //     content:response,
-            //     chat:messagePayLoad.chat
-            // })
+            socket.emit('ai-response',{
+                content:response,
+                chat:messagePayLoad.chat
+            })
         
-        console.log(messagePayload);
+        console.log(messagePayLoad);
             
            
         })
