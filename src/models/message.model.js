@@ -16,7 +16,14 @@ const messageSchema=new mongoose.Schema({
     },
     role:{
         type:String,
-        enum:["user","model"],
+        enum:["user","model","system"],
         default:"user"
     }
+},{
+    timestamps:true
 })
+
+
+const messageModel=mongoose.model("message",messageSchema)
+
+module.exports=messageModel
