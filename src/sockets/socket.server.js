@@ -2,6 +2,9 @@ const {Server}=require("socket.io")
 const cookie=require('cookie')
 const jwt=require('jsonwebtoken')
 const userModel = require("../models/user.model")
+const aiService=require('../service/ai.service')
+
+
 
 function initSocketServer(httpServer){
 
@@ -29,21 +32,30 @@ function initSocketServer(httpServer){
 
        }catch(err){
         next(new Error("Authentication Error: Invalid Token"))
-       }
-
-
-        
+       } 
 
     })
 
     io.on("connection", (socket)=>{
-        socket.on("ai-message",async (messagePayLoad)=>{
-          
+        console.log("User connected successfully:", socket.user?.email);
+        socket.on('ai-message',async (messagePayload)=>{
+            console.log("Event received!");
+            // const response=await aiService.generateResponse(messagePayLoad.content)
+
+            // socket.emit('ai-response',{
+            //     content:response,
+            //     chat:messagePayLoad.chat
+            // })
+        
+        console.log(messagePayload);
+            
            
         })
 
     })
+
 }
+
 
 
 module.exports=initSocketServer
