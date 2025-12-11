@@ -41,15 +41,24 @@ function initSocketServer(httpServer){
         console.log("User connected successfully:", socket.user?.email);
         socket.on('ai-message',async (messagePayLoad)=>{
 
-            // await messageModel.create({
-            //     chat:messagePayLoad.chat,
-            //     user:socket.user._id,
-            //     content:messagePayLoad.content,
-            //     role:"user"
-            // })
+           const message= await messageModel.create({
+                chat:messagePayLoad.chat,
+                user:socket.user._id,
+                content:messagePayLoad.content,
+                role:"user"
+            })
 
-            const vector=await aiService.generateVector(messagePayLoad.content)
-            console.log("vectors are:",vector);
+            const vectors=await aiService.generateVector(messagePayLoad.content)
+            
+            await createMemory({
+                vectors,
+                messageId:message._id,
+                metadata:{
+                    chat:messagePayLoad.chat ,
+                    user:socket.user._id,
+                }
+
+            })
             
 
 
@@ -65,12 +74,22 @@ function initSocketServer(httpServer){
                 }
             }))
 
-            // await messageModel.create({
-            //     chat:messagePayLoad.chat,
-            //     user:socket.user._id,
-            //     content:response,
-            //     role:"model"
-            // })
+          const responseMessage=  await messageModel.create({
+                chat:messagePayLoad.chat,
+                user:socket.user._id,
+                content:response,
+                role:"model"
+            })  
+
+            const responseVectors=await aiService.generateVector(response)
+            await createMemory({
+                vectors:responseVectors,
+                messageId:responseMessage._id,
+                metadata:{
+                    chat:messagePayLoad.chat,
+                    user:socket.user._id
+                }
+            })
 
             socket.emit('ai-response',{
                 content:response,
