@@ -50,15 +50,25 @@ function initSocketServer(httpServer){
 
             const vectors=await aiService.generateVector(messagePayLoad.content)
             
+            const memory=await queryMemory({
+                queryVector:vectors,
+                limit:3,
+                metadata:{}
+            })
+            
             await createMemory({
                 vectors,
                 messageId:message._id,
                 metadata:{
                     chat:messagePayLoad.chat ,
                     user:socket.user._id,
+                    text:messagePayLoad.content
                 }
 
             })
+            
+
+            console.log(memory);
             
 
 
@@ -87,7 +97,8 @@ function initSocketServer(httpServer){
                 messageId:responseMessage._id,
                 metadata:{
                     chat:messagePayLoad.chat,
-                    user:socket.user._id
+                    user:socket.user._id,
+                    text:response
                 }
             })
 
