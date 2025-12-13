@@ -40,7 +40,8 @@ function initSocketServer(httpServer){
     io.on("connection", (socket)=>{
         console.log("User connected successfully:", socket.user?.email);
         socket.on('ai-message',async (messagePayLoad)=>{
-
+        
+            /*
            const message= await messageModel.create({
                 chat:messagePayLoad.chat,
                 user:socket.user._id,
@@ -49,15 +50,19 @@ function initSocketServer(httpServer){
             })
 
             const vectors=await aiService.generateVector(messagePayLoad.content)
-            
-            const memory=await queryMemory({
-                queryVector:vectors,
-                limit:3,
-                metadata:{
-                    user:socket.user._id
-                }
-            })
-            
+            */
+
+            const [message,vectors]=await Promise.all([
+                messageModel.create({
+                chat:messagePayLoad.chat,
+                user:socket.user._id,
+                content:messagePayLoad.content,
+                role:"user"
+            }),
+
+            aiService.generateVector(messagePayLoad.content),
+            ])
+
             await createMemory({
                 vectors,
                 messageId:message._id,
@@ -68,15 +73,34 @@ function initSocketServer(httpServer){
                 }
 
             })
+
             
-
-            console.log(memory);
+            /*
+            const memory=await queryMemory({
+                queryVector:vectors,
+                limit:3,
+                metadata:{
+                    user:socket.user._id
+                }
+            })
             
-
-
             const chatHistory=(await messageModel.find({
                 chat:messagePayLoad.chat
             }).sort({createdAt:-1}).limit(4).lean()).reverse()
+            */
+
+            const[memory,chatHistory]=await Promise.all([
+                queryMemory({
+                queryVector:vectors,
+                limit:3,
+                metadata:{
+                    user:socket.user._id
+                }
+            }),
+            messageModel.find({
+                chat:messagePayLoad.chat
+            }).sort({createdAt:-1}).limit(4).lean().then(messages => messages.reverse())
+            ])
                        
             const stm=chatHistory.map(item=>{ //stm=> short term memory
                 return {
@@ -100,15 +124,32 @@ function initSocketServer(httpServer){
             
 
             const response=await aiService.generateResponse([...ltm,...stm])
-
-          const responseMessage=  await messageModel.create({
+            
+            /*
+            const responseMessage=  await messageModel.create({
                 chat:messagePayLoad.chat,
                 user:socket.user._id,
                 content:response,
                 role:"model"
-            })  
-
+                })  
             const responseVectors=await aiService.generateVector(response)
+            */
+
+            socket.emit('ai-response',{
+                content:response,
+                chat:messagePayLoad.chat
+            })
+
+              const [responseMessage,responseVectors]=await Promise.all([
+                    messageModel.create({
+                chat:messagePayLoad.chat,
+                user:socket.user._id,
+                content:response,
+                role:"model"
+                }) ,
+                aiService.generateVector(response)
+            ])
+
             await createMemory({
                 vectors:responseVectors,
                 messageId:responseMessage._id,
@@ -117,11 +158,6 @@ function initSocketServer(httpServer){
                     user:socket.user._id,
                     text:response
                 }
-            })
-
-            socket.emit('ai-response',{
-                content:response,
-                chat:messagePayLoad.chat
             })
         
         // console.log(messagePayLoad);
