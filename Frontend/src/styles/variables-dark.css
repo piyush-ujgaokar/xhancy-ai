@@ -1,0 +1,14 @@
+/* Dark theme variables — applied when documentElement has data-theme="dark" */
+:root[data-theme="dark"]{
+  --bg: #071029;
+  --card: #0b1220;
+  --text: #e6eef8;
+  --muted: #9aa6b2;
+  --accent: #7c3aed;
+  --accent-contrast: #ffffff;
+  --input-bg: #071126;
+  --border: #122033;
+  --radius: 12px;
+  --shadow: 0 8px 30px rgba(2,6,23,0.6);
+  --gap: 14px;
+}
