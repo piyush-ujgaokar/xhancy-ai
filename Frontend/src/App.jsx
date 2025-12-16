@@ -1,10 +1,14 @@
-import React from 'react'
+import { useState } from 'react'
+
+import './App.css'
 import AppRoutes from './AppRoutes'
 
-const App = () => {
+function App() {
+
+
   return (
     <>
-      <AppRoutes/>
+      <AppRoutes />
     </>
   )
 }
