@@ -1,5 +1,6 @@
 import React from 'react';
-import './ChatSidebar.css';
+import "./ChatSidebar.css";
+
 
 
 const ChatSidebar = ({ chats, activeChatId, onSelectChat, onNewChat, open }) => {
