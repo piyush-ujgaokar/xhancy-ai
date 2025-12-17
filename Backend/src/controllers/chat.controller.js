@@ -1,5 +1,5 @@
 const chatModel=require('../models/chat.model')
-
+const messageModel=require('../models/message.model')
 
 async function createChat(req,res){
     const {title}=req.body
@@ -40,7 +40,18 @@ async function getChats(req,res){
     })
 }
 
+async function getMessages(req,res){
+    const chatId=req.params.id;
+    const messages= await messageModel.find({chat:chatId}).sort({createdAt:1})
+
+    res.status(200).json({
+        message:"Messages Retrieved Successfully",
+        messages:messages
+    })
+}
+
 module.exports={
     createChat,
-    getChats
+    getChats,
+    getMessages
 }

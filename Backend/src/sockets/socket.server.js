@@ -21,7 +21,7 @@ function initSocketServer(httpServer){
 
         const cookies=cookie.parse(socket.handshake.headers?.cookie || "");
 
-        if(!cookies){
+        if(!cookies.token){
             next(new Error("Authentication Error:No token provided"))
         }
 
@@ -46,19 +46,10 @@ function initSocketServer(httpServer){
     io.on("connection", (socket)=>{
         console.log("User connected successfully:", socket.user?.email);
         socket.on('ai-message',async (messagePayLoad)=>{
-        
-            /*
-           const message= await messageModel.create({
-                chat:messagePayLoad.chat,
-                user:socket.user._id,
-                content:messagePayLoad.content,
-                role:"user"
-            })
 
-            const vectors=await aiService.generateVector(messagePayLoad.content)
-            */
+            try{
 
-            const [message,vectors]=await Promise.all([
+                 const [message,vectors]=await Promise.all([
                 messageModel.create({
                 chat:messagePayLoad.chat,
                 user:socket.user._id,
@@ -80,25 +71,11 @@ function initSocketServer(httpServer){
 
             })
 
-            
-            /*
-            const memory=await queryMemory({
-                queryVector:vectors,
-                limit:3,
-                metadata:{
-                    user:socket.user._id
-                }
-            })
-            
-            const chatHistory=(await messageModel.find({
-                chat:messagePayLoad.chat
-            }).sort({createdAt:-1}).limit(4).lean()).reverse()
-            */
 
             const[memory,chatHistory]=await Promise.all([
                 queryMemory({
                 queryVector:vectors,
-                limit:3,
+                limit:20,
                 metadata:{
                     user:socket.user._id
                 }
@@ -127,19 +104,9 @@ function initSocketServer(httpServer){
             ]
             console.log(ltm[0]);
             console.log(stm);
-            
 
-            const response=await aiService.generateResponse([...ltm,...stm])
-            
-            /*
-            const responseMessage=  await messageModel.create({
-                chat:messagePayLoad.chat,
-                user:socket.user._id,
-                content:response,
-                role:"model"
-                })  
-            const responseVectors=await aiService.generateVector(response)
-            */
+
+           const response=await aiService.generateResponse([...ltm,...stm])
 
             socket.emit('ai-response',{
                 content:response,
@@ -165,6 +132,15 @@ function initSocketServer(httpServer){
                     text:response
                 }
             })
+            }catch (error) {
+    console.error("AI Error:", error.message);
+
+    socket.emit('ai-response', {
+      content: "Sorry, the AI is busy right now. Please try again in a moment.",
+      chat: messagePayLoad.chat
+    });
+  }
+        
         
         // console.log(messagePayLoad);
             

@@ -16,13 +16,13 @@
     display: flex;
     align-items: flex-end;
     gap: 8px;
-    max-width: 820px; /* ChatGPT input width vibes */
+    max-width: 720px; /* ChatGPT input width vibes */
     width: 100%;
-    margin: 0 32px;
+    margin: 0 20px;
     background: #1f1f20;
     border: 1px solid #3a3a3c;
     border-radius: 24px;
-    padding: 12px 14px 14px 18px; /* top tighter than bottom for hint room */
+    padding: 1px 14px 5px 18px; /* top tighter than bottom for hint room */
     position: relative;
     transition: border-color .15s, background-color .15s, box-shadow .15s;
 }
