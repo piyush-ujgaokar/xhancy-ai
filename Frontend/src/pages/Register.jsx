@@ -28,7 +28,7 @@ const Register = () => {
             withCredentials: true
         }).then((res) => {
             console.log(res);
-            navigate("/login");
+            navigate("/home");
         }).catch((err) => {
             console.error(err);
             alert('Registration failed (placeholder)');
@@ -74,7 +74,7 @@ const Register = () => {
                         {submitting ? 'Creating...' : 'Create Account'}
                     </button>
                 </form>
-                <p className="auth-alt">Already have an account? <Link to="/login">Sign in</Link></p>
+                <p className="auth-alt">Already have an account? <Link to="/home">Sign in</Link></p>
             </div>
         </div>
     );
