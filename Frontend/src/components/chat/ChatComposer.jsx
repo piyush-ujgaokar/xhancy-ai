@@ -36,7 +36,6 @@ const ChatComposer = ({ input, setInput, onSend, isSending }) => {
             spellCheck
             autoComplete="off"
           />
-          <div className="composer-hint" aria-hidden="true">Enter ↵ to send • Shift+Enter = newline</div>
         </div>
         <button
           type="submit"

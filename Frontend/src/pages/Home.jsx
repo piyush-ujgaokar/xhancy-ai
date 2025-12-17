@@ -48,11 +48,15 @@ const Home = () => {
     if (title) title = title.trim();
     if (!title) return
 
-    const response = await axios.post("https://cohort-1-project-chat-gpt.onrender.com/api/chat", {
+
+    const response = await axios.post("http://localhost:3000/api/chat",{
       title
-    }, {
+    },{
       withCredentials: true
     })
+
+    console.log(response.data);
+    
     getMessages(response.data.chat._id);
     dispatch(startNewChat(response.data.chat));
     setSidebarOpen(false);

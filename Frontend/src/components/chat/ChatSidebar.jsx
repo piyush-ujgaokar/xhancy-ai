@@ -14,6 +14,7 @@ const ChatSidebar = ({ chats, activeChatId, onSelectChat, onNewChat, open }) => 
         <button className="small-btn" onClick={onNewChat}>New</button>
       </div>
       <nav className="chat-list" aria-live="polite">
+        
         {chats.map(c => (
           <button
             key={c._id}
