@@ -6,7 +6,7 @@ const router=express.Router()
 
 router.post('/',authMiddleware.authUser,chatController.createChat)
 
-
+router.get('/',authMiddleware.authUser,chatController.getChats)
 
 
 module.exports=router
