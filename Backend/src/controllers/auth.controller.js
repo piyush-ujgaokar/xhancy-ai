@@ -8,7 +8,7 @@ async function registerUser(req,res){
     const isUserAlreadyExists=await userModel.findOne({email})
 
     if(isUserAlreadyExists){
-        res.status(400).json("User Already Exists")
+       return res.status(400).json({message:"User Already Exists"})
     }
 
 
@@ -22,10 +22,14 @@ async function registerUser(req,res){
         password:hashPassword
     })
 
-    const token=jwt.sign({id:user._id},process.env.JWT_SECRET)
-    res.status(201).json({user,token})
+    const token=jwt.sign({id:user._id},process.env.JWT_SECRET, { expiresIn: "7d" })
     
-    res.cookie("token",token)
+   res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,        // REQUIRED on Render (HTTPS)
+    sameSite: "none",    // REQUIRED for cross-origin
+    maxAge: 7 * 24 * 60 * 60 * 1000
+});
     res.status(200).json({
         message:"User registered Successfully",
         user:{
@@ -45,21 +49,26 @@ async function loginUser(req,res){
     })
 
     if(!user){
-        res.status(400).json({
+       return res.status(400).json({
             message:"Invalid Email & Password"
         })
     }
 
     const isPasswordValid=await bcrypt.compare(password,user.password)
     if(!isPasswordValid){
-        res.status(400).json({
+       return res.status(400).json({
             message:"Invalid Email or Password"
         })
     }
 
-    const token=jwt.sign({id:user._id},process.env.JWT_SECRET)
+    const token=jwt.sign({id:user._id},process.env.JWT_SECRET, { expiresIn: "7d" })
 
-    res.cookie("token",token)
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,        // REQUIRED on Render (HTTPS)
+    sameSite: "none",    // REQUIRED for cross-origin
+    maxAge: 7 * 24 * 60 * 60 * 1000
+});
 
     res.status(200).json({
         message:"User Login Successfully",

@@ -18,7 +18,8 @@ const Register = () => {
         setSubmitting(true);
         console.log(form);
 
-        axios.post("https://xhancy-ai.onrender.com/api/auth/register", {
+    try{
+         const res= axios.post("https://xhancy-ai.onrender.com/api/auth/register", {
             email: form.email,
             fullName: {
                 firstName: form.firstname, 
@@ -27,23 +28,19 @@ const Register = () => {
             password: form.password
         }, {
             withCredentials: true
-        }).then((res) => {
-            console.log(res);
-            navigate("/login");
-        }).catch((err) => {
+        });
+         console.log(res);
+            navigate("/");
+           
+        }catch(err){
             console.error(err);
             alert('Registration failed (placeholder)');
-        })
-
-        try {
-            // Placeholder: integrate real registration logic / API call.
-
-        } catch (err) {
-            console.error(err);
-        } finally {
+        }finally {
             setSubmitting(false);
         }
     }
+      
+
 
     return (
         <div className="center-min-h-screen">
@@ -80,5 +77,4 @@ const Register = () => {
         </div>
     );
 };
-
 export default Register;
