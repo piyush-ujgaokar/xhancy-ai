@@ -11,7 +11,7 @@ function initSocketServer(httpServer) {
 
     const io = new Server(httpServer, {
         cors: {
-            origin: "https://xhancy-ai.onrender.com",
+            origin: "http://localhost:5173",
             allowedHeaders: [ "Content-Type", "Authorization" ],
             credentials: true
         }
