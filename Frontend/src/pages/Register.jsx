@@ -21,7 +21,7 @@ const Register = () => {
         axios.post("https://xhancy-ai.onrender.com/api/auth/register", {
             email: form.email,
             fullName: {
-                firstName: form.firstname,
+                firstName: form.firstname, 
                 lastName: form.lastname
             },
             password: form.password
