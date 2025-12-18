@@ -22,7 +22,7 @@ function initSocketServer(httpServer) {
         const cookies = cookie.parse(socket.handshake.headers?.cookie || "");
 
         if (!cookies.token) {
-           return next(new Error("Authentication error: No token provided"));
+            next(new Error("Authentication error: No token provided"));
         }
 
         try {
