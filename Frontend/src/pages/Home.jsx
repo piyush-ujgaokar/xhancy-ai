@@ -48,13 +48,11 @@ const Home = () => {
     if (title) title = title.trim();
     if (!title) return
 
-
-    const response = await axios.post("https://xhancy-ai.onrender.com/api/chat",{
+    const response = await axios.post("https://xhancy-ai.onrender.com/api/chat", {
       title
-    },{
-      withCredentials:true
+    }, {
+      withCredentials: true
     })
-    
     getMessages(response.data.chat._id);
     dispatch(startNewChat(response.data.chat));
     setSidebarOpen(false);
@@ -73,6 +71,7 @@ const Home = () => {
     })
 
     tempSocket.on("ai-response", (messagePayload) => {
+      console.log("Received AI response:", messagePayload);
 
       setMessages((prevMessages) => [ ...prevMessages, {
         type: 'ai',
@@ -89,6 +88,7 @@ const Home = () => {
   const sendMessage = async () => {
 
     const trimmed = input.trim();
+    console.log("Sending message:", trimmed);
     if (!trimmed || !activeChatId || isSending) return;
     dispatch(sendingStarted());
 
@@ -96,6 +96,8 @@ const Home = () => {
       type: 'user',
       content: trimmed
     } ];
+
+    console.log("New messages:", newMessages);
 
     setMessages(newMessages);
     dispatch(setInput(''));
@@ -117,7 +119,9 @@ const Home = () => {
 
   const getMessages = async (chatId) => {
 
-   const response = await  axios.get(`https://xhancy-ai.onrender.com/api/chat/messages/${chatId}`,{    withCredentials: true })
+   const response = await  axios.get(`https://xhancy-ai.onrender.com/api/chat/messages/${chatId}`, { withCredentials: true })
+
+   console.log("Fetched messages:", response.data.messages);
 
    setMessages(response.data.messages.map(m => ({
      type: m.role === 'user' ? 'user' : 'ai',
@@ -148,7 +152,7 @@ return (
       {messages.length === 0 && (
         <div className="chat-welcome" aria-hidden="true">
           <div className="chip">Early Preview</div>
-          <h1>Xhancy Ai</h1>
+          <h1>ChatGPT Clone</h1>
           <p>Ask anything. Paste text, brainstorm ideas, or get quick explanations. Your chats stay in the sidebar so you can pick up where you left off.</p>
         </div>
       )}

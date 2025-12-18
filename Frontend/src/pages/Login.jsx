@@ -19,6 +19,8 @@ const Login = () => {
         setSubmitting(true);
 
 
+        console.log(form);
+
         axios.post("https://xhancy-ai.onrender.com/api/auth/login", {
             email: form.email,
             password: form.password
@@ -28,7 +30,7 @@ const Login = () => {
             }
         ).then((res) => {
             console.log(res);
-            navigate("/home");
+            navigate("/");
         }).catch((err) => {
             console.error(err);
         }).finally(() => {

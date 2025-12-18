@@ -16,6 +16,7 @@ const Register = () => {
     async function handleSubmit(e) {
         e.preventDefault();
         setSubmitting(true);
+        console.log(form);
 
         axios.post("https://xhancy-ai.onrender.com/api/auth/register", {
             email: form.email,
@@ -28,7 +29,7 @@ const Register = () => {
             withCredentials: true
         }).then((res) => {
             console.log(res);
-            navigate("/login");
+            navigate("/");
         }).catch((err) => {
             console.error(err);
             alert('Registration failed (placeholder)');
